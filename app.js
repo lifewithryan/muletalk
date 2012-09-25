@@ -36,6 +36,7 @@ io.sockets.on('connection', function (socket) {
 		socket.emit('updaterooms', rooms, 'bedford');
 		socket.emit('updateusers', usernames);
 		socket.broadcast.emit('updateusers', usernames);
+		//io.sockets.emit('updateusers', username);
 	});
 
 	// when the client emits 'sendchat', this listens and executes
@@ -61,17 +62,36 @@ io.sockets.on('connection', function (socket) {
 	// user creates room
 	socket.on('createRoom', function(roomName) {
 		rooms.push(roomName);
-		socket.emit('addedRoom', rooms, roomName);
-		socket.broadcast.emit('addedRoom', rooms, roomName);
+		io.sockets.emit('addedRoom', rooms, roomName);
 	});
 
-	/*socket.on('command', function(commandString) {
+	// TODO: move functionality within this script to separate js file
+	socket.on('command', function(commandString) {
 		cmd = commandString.split(' ');
 
 		if(cmd[0] == "deleteroom") {
-			rooms
-		} else if(commandString == )
-	});*/
+			//cool side effect: if you delete a room with people in it
+			//they still stay in that room, but nobody else can join it :)
+			roomToDelete = cmd[1];
+			newList = [];
+			for(var r in rooms) {
+				if( rooms[r] != roomToDelete) {
+					newList.push(rooms[r]);
+				}
+			}
+			rooms = newList;
+			io.sockets.emit('removedRoom', roomToDelete);
+		} else if(cmd[0] == 'createroom') {
+			roomToAdd = cmd[1];
+			rooms.push(roomToAdd);
+			io.sockets.emit('addedRoom', rooms, roomToAdd);
+		} else if(cmd[0] == 'imgurl') {
+			resource = cmd[1];
+			data = "<img src='" + cmd[1] + "'/>";
+			io.sockets.in(socket.room).emit('updatechat', socket.username, data);
+		}
+
+	});
 
 	// when the user disconnects.. perform this
 	socket.on('disconnect', function(){
