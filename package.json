@@ -1,9 +1,16 @@
 {
-     "name": "mukhin_chat",
-     "description": "example chat application with socket.io",
-     "version": "0.0.1",
-     "dependencies": {
-        "express": "2.4.6",
-        "socket.io": "0.8.4"
-     }
+  "name": "bedford_chat",
+  "description": "chat application with socket.io",
+  "version": "0.0.1-26",
+  "dependencies": {
+    "express": "2.4.6",
+    "socket.io": "0.8.4"
+  },
+  "subdomain": "lifewithryan.muletalk",
+  "scripts": {
+    "start": "app.js"
+  },
+  "engines": {
+    "node": "0.8.x"
+  }
 }
