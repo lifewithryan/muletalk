@@ -2,13 +2,13 @@
 <html>
 <head>
 	<title>Mule Talk</title>
-	<link rel="stylesheet" type="text/css" href="http://lifewithryan.muletalk.jit.su/style.css" />
-	<!--<link rel="stylesheet" type="text/css" href="http://localhost:8080/style.css" />-->
+	<!--<link rel="stylesheet" type="text/css" href="http://lifewithryan.muletalk.jit.su/style.css" />-->
+	<link rel="stylesheet" type="text/css" href="http://localhost:8080/style.css" />
 	<script type="text/javascript" src="http://lifewithryan.muletalk.jit.su/socket.io/socket.io.js"></script>
 	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
 	<script type="text/javascript">
-		var socket = io.connect('http://lifewithryan.muletalk.jit.su');
-		//var socket = io.connect('http://localhost:8080');
+		//var socket = io.connect('http://lifewithryan.muletalk.jit.su');
+		var socket = io.connect('http://localhost:8080');
 
 		// on connection to server, ask for user's name with an anonymous callback
 		socket.on('connect', function(){
