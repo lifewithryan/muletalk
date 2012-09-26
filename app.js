@@ -1,7 +1,7 @@
 var app = require('express').createServer()
 var io = require('socket.io').listen(app);
 
-app.listen(8080);
+app.listen(80);
 
 // routing
 app.get('/', function (req, res) {
@@ -10,12 +10,23 @@ app.get('/', function (req, res) {
 app.get('/style.css', function (req, res) {
   res.sendfile(__dirname + '/style.css');
 });
+app.get('/admin', function(req, res) {
+	res.sendfile(__dirname + '/admin.html');
+});
 
 // usernames which are currently connected to the chat
 var usernames = {};
 
 // rooms which are currently available in chat
 var rooms = ['bedford'];
+
+// history logging
+var log = [];
+
+function quicklog(s) {
+	nowish = new Date();
+	log.push(s + ' ' + nowish);
+}
 
 io.sockets.on('connection', function (socket) {
 
@@ -27,16 +38,17 @@ io.sockets.on('connection', function (socket) {
 		socket.room = 'bedford';
 		// add the client's username to the global list
 		usernames[username] = username;
-		// send client to room 1
+		// send client to a default
 		socket.join('bedford');
 		// echo to client they've connected
 		socket.emit('updatechat', 'SERVER', 'you have connected to ' + socket.room);
-		// echo to room 1 that a person has connected to their room
+		// echo to room that a person has connected to their room
 		socket.broadcast.to(socket.room).emit('updatechat', 'SERVER', username + ' has connected to this room');
 		socket.emit('updaterooms', rooms, 'bedford');
 		socket.emit('updateusers', usernames);
 		socket.broadcast.emit('updateusers', usernames);
-		//io.sockets.emit('updateusers', username);
+		logStr = username + ' joined the server at ';
+		quicklog(logStr);
 	});
 
 	// when the client emits 'sendchat', this listens and executes
@@ -102,6 +114,12 @@ io.sockets.on('connection', function (socket) {
 		// echo globally that this client has left
 		socket.broadcast.emit('updatechat', 'SERVER', socket.username + ' has disconnected');
 		socket.leave(socket.room);
+		quicklog(socket.username + ' disconnected at ');
+	});
+
+	// functions called from admin url
+	socket.on('showlog', function() {
+		socket.emit('showuseractivity', usernames, log);
 	});
 
 

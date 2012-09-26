@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Mule Talk</title>
+	<link rel="stylesheet" type="text/css" href="http://lifewithryan.muletalk.jit.su/style.css" />
+	<!--<link rel="stylesheet" type="text/css" href="http://localhost:8080/style.css" />-->
+	<script type="text/javascript" src="http://lifewithryan.muletalk.jit.su/socket.io/socket.io.js"></script>
+	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+	<script type="text/javascript">
+		var socket = io.connect('http://lifewithryan.muletalk.jit.su');
+		//var socket = io.connect('http://localhost:8080');
+
+		socket.on('connect', function() {
+			socket.emit('showlog');
+		});
+
+		socket.on('showuseractivity', function(users, log) {
+			console.log('showing user activity');
+			$.each(users, function(key, value) {
+				console.log(value);
+				$('#current-users').append('<div>' + value + '</div>');
+			});
+			$('#user-history').empty();
+			$.each(log, function(key, value) {
+				$('#user-history').append('<div>' + value + '</div>');
+			});
+		});
+		// this will keep updating as people log in
+		socket.on('updateusers', function(users) {
+			$('#current-users').empty();
+			$.each(users, function(key, value) {
+				$('#current-users').append('<div>' + value + '</div>');
+			});
+		});
+	</script>
+</head>
+<body>
+	<div id="content">
+		<h2 id="current-users">Current Users:</h2>
+		<div id="User Activity"></div>
+		<h2>History:</h2>
+		<div id="user-history"></div>
+	</div>
+</body>
+</html>
